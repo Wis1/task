@@ -2,6 +2,7 @@ package test;
 
 import main.Block;
 import main.CompositeBlock;
+import main.NotFoundException;
 import main.Wall;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class WallTest {
 
@@ -77,6 +79,17 @@ public class WallTest {
 
         // Assert
         assertEquals(7, totalCount);
+    }
+
+    @Test
+    void testException() {
+        //Arrange
+        List<Block> blocks = List.of();
+        Wall wall = new Wall(blocks);
+
+        //Act & Assert
+        RuntimeException exception=assertThrows(NotFoundException.class, () -> wall.findBlockByColor("red"));
+        assertEquals("Block with color red not found", exception.getMessage());
     }
 
     record ExampleBlock(String color, String material) implements Block {
