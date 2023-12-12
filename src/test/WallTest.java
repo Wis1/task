@@ -1,6 +1,7 @@
 package test;
 
 import main.Block;
+import main.CompositeBlock;
 import main.Wall;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -53,7 +54,55 @@ public class WallTest {
         assertEquals("Green", foundBlocks.get(1).color());
     }
 
+    @Test
+    void testCount() {
+        // Arrange
+        List<Block> blocks = Arrays.asList(
+                new ExampleBlock("Grey", "Brick"),
+                new ExampleBlock("Blue", "Wood"),
+                new CompositeBlockImpl(
+                        Arrays.asList(
+                                new ExampleBlock("Green", "Stone"),
+                                new ExampleBlock("Yellow", "Stone"),
+                                new ExampleBlock("Yellow", "Stone"),
+                                new ExampleBlock("Yellow", "Stone"),
+                                new ExampleBlock("Yellow", "Stone")
+                        )
+                )
+        );
+        Wall wall = new Wall(blocks);
+
+        // Act
+        int totalCount = wall.count();
+
+        // Assert
+        assertEquals(7, totalCount);
+    }
+
     record ExampleBlock(String color, String material) implements Block {
+    }
+
+    static class CompositeBlockImpl implements CompositeBlock {
+        private final List<Block> elements;
+
+        public CompositeBlockImpl(List<Block> elements) {
+            this.elements = elements;
+        }
+
+        @Override
+        public List<Block> getBlocks() {
+            return elements;
+        }
+
+        @Override
+        public String color() {
+            return elements.get(0).color();
+        }
+
+        @Override
+        public String material() {
+            return elements.get(0).material();
+        }
     }
 }
 
