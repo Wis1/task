@@ -2,6 +2,7 @@ package main;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Wall implements Structure {
     private final List<Block> blocks;
@@ -12,16 +13,24 @@ public class Wall implements Structure {
 
     @Override
     public Optional<Block> findBlockByColor(String color) {
-        return Optional.empty();
+        return blocks.stream()
+                .filter(block -> block.color().equals(color))
+                .findAny();
     }
 
     @Override
     public List<Block> findBlocksByMaterial(String material) {
-        return List.of();
+        return blocks.stream()
+                .filter(block -> block.material().equals(material))
+                .collect(Collectors.toList());
     }
 
     @Override
     public int count() {
-        return 0;
+        return blocks.stream()
+                .mapToInt(block -> block instanceof CompositeBlock ?
+                        ((CompositeBlock) block).getBlocks().size() :
+                        1)
+                .sum();
     }
 }
